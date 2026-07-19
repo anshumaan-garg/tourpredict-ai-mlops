@@ -23,7 +23,7 @@ mlflow.set_experiment("tourism-wellness-training")
 api = HfApi(token=os.getenv("HF_TOKEN"))
 
 # Load the train/test splits from the Hugging Face dataset space
-base = "hf://datasets/YOUR_HF_USERNAME/tourism-wellness-package"
+base = "hf://datasets/NineKnox/tourism-wellness-package"
 Xtrain = pd.read_csv(f"{base}/Xtrain.csv")
 Xtest = pd.read_csv(f"{base}/Xtest.csv")
 ytrain = pd.read_csv(f"{base}/ytrain.csv").values.ravel()
@@ -113,7 +113,7 @@ with mlflow.start_run():
     print(f"Model saved as: {model_path}")
 
     # Register the model in the Hugging Face model hub
-    repo_id = "YOUR_HF_USERNAME/tourism-wellness-model"
+    repo_id = "NineKnox/tourism-wellness-model"
     repo_type = "model"
     try:
         api.repo_info(repo_id=repo_id, repo_type=repo_type)

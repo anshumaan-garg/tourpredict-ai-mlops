@@ -4,7 +4,7 @@ import os
 
 api = HfApi(token=os.getenv("HF_TOKEN"))
 
-repo_id = "YOUR_HF_USERNAME/tourism-wellness-prediction"
+repo_id = "NineKnox/tourism-wellness-prediction"
 repo_type = "space"
 
 # Create the Space if it does not exist (Docker SDK)

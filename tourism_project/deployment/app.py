@@ -5,7 +5,7 @@ import joblib
 
 # Download and load the trained model from the Hugging Face model hub
 model_path = hf_hub_download(
-    repo_id="YOUR_HF_USERNAME/tourism-wellness-model",
+    repo_id="NineKnox/tourism-wellness-model",
     filename="best_tourism_wellness_model_v1.joblib",
 )
 model = joblib.load(model_path)

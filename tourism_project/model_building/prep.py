@@ -10,7 +10,7 @@ from huggingface_hub import HfApi
 api = HfApi(token=os.getenv("HF_TOKEN"))
 
 # Load the dataset directly from the Hugging Face dataset space
-DATASET_PATH = "hf://datasets/YOUR_HF_USERNAME/tourism-wellness-package/tourism.csv"
+DATASET_PATH = "hf://datasets/NineKnox/tourism-wellness-package/tourism.csv"
 df = pd.read_csv(DATASET_PATH)
 print("Dataset loaded successfully. Shape:", df.shape)
 
@@ -69,7 +69,7 @@ for file_path in files:
     api.upload_file(
         path_or_fileobj=file_path,
         path_in_repo=file_path.split("/")[-1],
-        repo_id="YOUR_HF_USERNAME/tourism-wellness-package",
+        repo_id="NineKnox/tourism-wellness-package",
         repo_type="dataset",
     )
     print(f"Uploaded {file_path} to the dataset space.")

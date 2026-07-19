@@ -2,7 +2,7 @@ from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
 from huggingface_hub import HfApi, create_repo
 import os
 
-repo_id = "YOUR_HF_USERNAME/tourism-wellness-package"
+repo_id = "NineKnox/tourism-wellness-package"
 repo_type = "dataset"
 
 # Initialize API client with the write token stored in the HF_TOKEN environment variable
