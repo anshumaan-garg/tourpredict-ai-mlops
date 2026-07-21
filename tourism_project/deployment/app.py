@@ -1,13 +1,20 @@
 # ============================================================================
 # GRADIO frontend -- this is the DEPLOYED app.
 # It overwrites the Streamlit app.py above, because Hugging Face removed the free
-# Streamlit SDK (see the note above the Streamlit cell). Gradio is free on HF
-# Spaces, so this Gradio version is what gets pushed to the Space.
+# Streamlit SDK (see the note above the Streamlit cell).
+#
+# HF now forces free Gradio Spaces onto ZeroGPU hardware (CPU-basic is PRO-only).
+# ZeroGPU refuses to start unless at least one function is decorated with
+# @spaces.GPU -- otherwise you get "No @spaces.GPU function detected during
+# startup". So we import `spaces` and decorate the prediction function. The
+# model still runs on CPU; the decorator just satisfies the ZeroGPU scheduler
+# (and is a harmless no-op if the Space ever runs on non-ZeroGPU hardware).
 # ============================================================================
 import gradio as gr
 import pandas as pd
 from huggingface_hub import hf_hub_download
 import joblib
+import spaces
 
 # Load the trained model from the Hugging Face model hub
 model_path = hf_hub_download(
@@ -17,6 +24,7 @@ model_path = hf_hub_download(
 model = joblib.load(model_path)
 
 
+@spaces.GPU
 def predict_purchase(Age, TypeofContact, CityTier, DurationOfPitch, Occupation,
                      Gender, NumberOfPersonVisiting, NumberOfFollowups,
                      ProductPitched, PreferredPropertyStar, MaritalStatus,
@@ -79,4 +87,6 @@ demo = gr.Interface(
 )
 
 if __name__ == "__main__":
+    # ssr_mode=False disables Gradio's Node.js SSR proxy, which shuts itself down
+    # on HF Spaces (symptom: "Stopping Node.js server..." then a blank page).
     demo.launch(ssr_mode=False)

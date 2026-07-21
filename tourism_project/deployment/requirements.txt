@@ -1,4 +1,7 @@
 # gradio is provided by the Gradio Space SDK, so it is NOT pinned here.
+# `spaces` provides the @spaces.GPU decorator that ZeroGPU hardware requires
+# (free Gradio Spaces now run on ZeroGPU). It is normally pre-installed on the
+# ZeroGPU image; listing it unpinned just guarantees the `import spaces` works.
 # huggingface_hub is intentionally left UNPINNED: the Gradio SDK (gradio 6.x)
 # requires huggingface-hub>=1.2.0, so pinning an old version (e.g. 0.32.6) breaks
 # the Space build with a dependency conflict. app.py only uses hf_hub_download,
@@ -6,6 +9,7 @@
 # training versions so the model pickle loads.
 pandas==2.2.2
 huggingface_hub
+spaces
 joblib==1.5.1
 scikit-learn==1.6.0
 xgboost==2.1.4
