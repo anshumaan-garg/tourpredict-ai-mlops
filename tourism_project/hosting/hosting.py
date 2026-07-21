@@ -16,7 +16,7 @@ try:
     print(f"Space '{repo_id}' already exists. Using it.")
 except RepositoryNotFoundError:
     print(f"Space '{repo_id}' not found. Creating new Space...")
-    create_repo(repo_id=repo_id, repo_type=repo_type, space_sdk="streamlit", private=False)
+    create_repo(repo_id=repo_id, repo_type=repo_type, space_sdk="gradio", private=False)
     print(f"Space '{repo_id}' created.")
 
 # Upload the app + dependencies. Skip the Dockerfile: the Streamlit SDK does not
