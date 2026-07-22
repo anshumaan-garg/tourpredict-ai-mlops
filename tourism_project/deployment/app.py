@@ -6,9 +6,11 @@
 # HF now forces free Gradio Spaces onto ZeroGPU hardware (CPU-basic is PRO-only).
 # ZeroGPU refuses to start unless at least one function is decorated with
 # @spaces.GPU -- otherwise you get "No @spaces.GPU function detected during
-# startup". So we import `spaces` and decorate the prediction function. The
-# model still runs on CPU; the decorator just satisfies the ZeroGPU scheduler
-# (and is a harmless no-op if the Space ever runs on non-ZeroGPU hardware).
+# startup". BUT routing the real prediction through the GPU burns the tiny free
+# GPU quota (5 min/day) and can hit the per-call GPU time limit -- pointless for
+# a CPU-only model. So we satisfy the check with a tiny no-op @spaces.GPU function
+# and keep predict_purchase UNDECORATED: predictions then run on the free CPU
+# process (instant, no GPU quota, no time-limit errors).
 # ============================================================================
 import gradio as gr
 import pandas as pd
@@ -24,7 +26,13 @@ model_path = hf_hub_download(
 model = joblib.load(model_path)
 
 
+# Tiny no-op GPU function -- exists ONLY to satisfy the ZeroGPU startup check.
+# It is never called during normal use, so it consumes no GPU quota.
 @spaces.GPU
+def _zerogpu_warmup():
+    return "ok"
+
+
 def predict_purchase(Age, TypeofContact, CityTier, DurationOfPitch, Occupation,
                      Gender, NumberOfPersonVisiting, NumberOfFollowups,
                      ProductPitched, PreferredPropertyStar, MaritalStatus,
@@ -32,6 +40,7 @@ def predict_purchase(Age, TypeofContact, CityTier, DurationOfPitch, Occupation,
                      NumberOfChildrenVisiting, Designation, MonthlyIncome):
     # Build a single-row DataFrame with the exact training feature columns.
     # Numeric-coded fields are cast so they never arrive as strings.
+    # This runs on CPU (no @spaces.GPU) -- an XGBoost predict needs no GPU.
     input_data = pd.DataFrame([{
         "Age": float(Age),
         "TypeofContact": TypeofContact,
